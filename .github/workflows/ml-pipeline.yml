@@ -21,15 +21,4 @@ jobs:
         
     - name: Run tests
       run: |
-        pytest tests/
-        
-    - name: Train model
-      run: |
-        python src/train.py
-        
-    - name: Upload trained model
-      uses: actions/upload-artifact@v4
-      with:
-        name: trained-model
-        path: model_mnist_*.pth
-        retention-days: 90
+        pytest tests/ 
