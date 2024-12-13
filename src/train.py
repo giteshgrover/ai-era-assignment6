@@ -99,7 +99,8 @@ def train_and_test_model():
     model = MNISTModel().to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
-    
+    total_params = sum(p.numel() for p in model.parameters())
+    print(f"[INFO] Total parameters: {total_params}")
     # Training loop
     epochs = 2
     print("[STEP 3/5] Starting training...")
