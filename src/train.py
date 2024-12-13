@@ -110,7 +110,7 @@ def train_and_test_model():
     total_params = sum(p.numel() for p in model.parameters())
     print(f"[INFO] Total parameters: {total_params}")
     # Training loop
-    epochs = 2
+    epochs = 20
     print("[STEP 3-4/5] Starting training and Evaluation...")
     start_time = time.time()
     for epoch in range(epochs):

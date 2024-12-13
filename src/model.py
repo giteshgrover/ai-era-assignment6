@@ -60,7 +60,8 @@ class MNISTModel(nn.Module):
             nn.ReLU(),
 
             # Convolution Layer 7
-            nn.Conv2d(12, 12, kernel_size=3, padding=0), # Input: 12, Output: 12, RF: 33
+            nn.Conv2d(12, 24, kernel_size=3, padding=0), # Input: 12, Output: 12, RF: 33
+            # Dropoff, bastch normalization and Relu are never done in the last layer
             # Image Size 5 x 5 (padding 0)
 
         )
@@ -68,10 +69,10 @@ class MNISTModel(nn.Module):
         
         self.classifier = nn.Sequential(
             # nn.Dropout(0.5),
-            nn.Linear(12 * 5 * 5, 32),
+            nn.Linear(24 * 5 * 5, 12),
             nn.ReLU(),
             # nn.Dropout(0.5),
-            nn.Linear(32, 10)
+            nn.Linear(12, 10)
         )
         
     def forward(self, x):
