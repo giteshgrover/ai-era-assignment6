@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from torch.optim.lr_scheduler import StepLR
 from torchvision import datasets, transforms
 from model import MNISTModel
 from datetime import datetime
@@ -86,31 +87,33 @@ def train_and_test_model():
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,)) # how we comeup with these mean and std?
     ])
-    
-    full_dataset = datasets.MNIST('./data', train=True, download=True, transform=train_transform )
-    validation_dataset = datasets.MNIST('./data', train=False, download=True, transform=test_transform)
-    
-    # Create indices for the first 50000 samples
+
+        # Create indices for the first 50000 samples
     train_indices = range(50000)
     test_indices = range(50000, 60000)
-    # Create subset datasets
-    train_dataset = Subset(full_dataset, train_indices)
-    test_dataset = Subset(full_dataset, test_indices)
     
+    train_dataset = Subset(datasets.MNIST('./data', train=True, download=True, transform=train_transform ), train_indices)
+    test_dataset = Subset(datasets.MNIST('./data', train=True, download=True, transform=test_transform), test_indices)
+    validation_dataset = datasets.MNIST('./data', train=False, download=True, transform=test_transform)
+    
+
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
-    test_loader = torch.utils.data.DataLoader(validation_dataset, batch_size=64, shuffle=False)
-    validation_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False)
+    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False)
+    validation_loader = torch.utils.data.DataLoader(validation_dataset, batch_size=64, shuffle=False)
 
     print(f"[INFO] Total training batches: {len(train_loader)}")
     print(f"[INFO] Batch size: 64")
     print(f"[INFO] Training samples: {len(train_dataset)}")
     print(f"[INFO] Test samples: {len(test_dataset)}\n")
+    print(f"[INFO] Validation samples: {len(validation_dataset)}\n")
     
     # Initialize model
     print("[STEP 2/5] Initializing model...")
     model = MNISTModel().to(device)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    # optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+    scheduler = StepLR(optimizer, step_size=6, gamma=0.1)
     total_params = sum(p.numel() for p in model.parameters())
     print(f"[INFO] Total parameters: {total_params}")
     # Training loop
@@ -123,6 +126,7 @@ def train_and_test_model():
         training_time = time.time() - start_time
         print(f"[INFO] Training of Epoch {epoch+1} completed in {training_time:.2f} seconds")
         print("[INFO] Evaluating model...")
+        scheduler.step()
         test_model(model, test_loader, device)
 
     print("\n[STEP 5/5] Evaluating model against validation...")
