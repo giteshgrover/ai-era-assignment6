@@ -80,7 +80,7 @@ class MNISTModel(nn.Module):
             nn.AdaptiveAvgPool2d(1), # Input: 7 x 7 x 10 Output: 1 x 1 x 10
             # Dropoff, batch normalization and Relu are never done in the last layer
             # Image Size 1 x 1 (x 10)
-            # nn.Conv2d(10, 10, kernel_size=1, padding=0),
+            nn.Conv2d(10, 10, kernel_size=1, padding=0),
 
         )
 
@@ -99,8 +99,4 @@ class MNISTModel(nn.Module):
         # x = self.classifier(x)
         x = x.view(-1, 10)
         x = F.log_softmax(x, dim=1)
-        # print ("###############################")
-        # print(x.shape)
-        # print ("###############################")
-        # print(x.shape)
         return x 
