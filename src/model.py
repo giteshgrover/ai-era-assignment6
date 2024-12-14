@@ -1,11 +1,12 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 class MNISTModel(nn.Module):
     def __init__(self):
         super(MNISTModel, self).__init__()
         
-        dropout_rate = 0.2 # Dropout .2..Isn't it too high?
+        dropout_rate = 0.1 # Dropout
         # nn.Conv2d(inputChannel, NumOfKernels or Output Channels, kernel_size=3, padding=1)
         # nn.BatchNorm2d(inputChannel),
 
@@ -60,9 +61,21 @@ class MNISTModel(nn.Module):
             nn.ReLU(),
 
             # Convolution Layer 7
-            nn.Conv2d(12, 24, kernel_size=3, padding=0), # Input: 12, Output: 12, RF: 33
-            # Dropoff, bastch normalization and Relu are never done in the last layer
-            # Image Size 5 x 5 (padding 0)
+            nn.Conv2d(12, 24, kernel_size=3, padding=1), # Input: 12, Output: 12, RF: 33
+            nn.BatchNorm2d(24),
+            nn.Dropout(dropout_rate),
+            nn.ReLU(),
+
+         # Output Layer
+            # ImageSize 7 x 7
+            nn.Conv2d(24, 10, kernel_size=1, padding=0), # 1x1 Mixer Input: 24, Output: 10
+            nn.BatchNorm2d(10),
+            nn.Dropout(dropout_rate),
+            nn.ReLU(),
+
+            nn.AvgPool2d(kernel_size=7) # Input: 7 x 7 x 10 Output: 1 x 1 x 10
+            # Dropoff, batch normalization and Relu are never done in the last layer
+            # Image Size 1 x 1 (x 10)
 
         )
 
@@ -77,7 +90,12 @@ class MNISTModel(nn.Module):
         
     def forward(self, x):
         x = self.features(x)
-        x.size(0)
-        x = x.view(x.size(0), -1)
-        x = self.classifier(x)
+        # x = x.view(x.size(0), -1)
+        # x = self.classifier(x)
+        x = x.view(-1, 10)
+        x = F.log_softmax(x, dim=1)
+        # print ("###############################")
+        # print(x.shape)
+        # print ("###############################")
+        # print(x.shape)
         return x 

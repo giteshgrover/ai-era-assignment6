@@ -77,25 +77,29 @@ def train_and_test_model():
 
     # Data loading
     print("[STEP 1/5] Preparing datasets...")
-    transform = transforms.Compose([
+    train_transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.RandomRotation((-7.0, 7.0), fill=(1,)),
+        transforms.Normalize((0.1307,), (0.3081,)) # how we comeup with these mean and std?
+    ])
+    test_transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,)) # how we comeup with these mean and std?
     ])
     
-    full_dataset = datasets.MNIST('./data', train=True, download=True, transform=transform )
-    validation_dataset = datasets.MNIST('./data', train=False, download=True, transform=transform)
+    full_dataset = datasets.MNIST('./data', train=True, download=True, transform=train_transform )
+    validation_dataset = datasets.MNIST('./data', train=False, download=True, transform=test_transform)
     
     # Create indices for the first 50000 samples
     train_indices = range(50000)
     test_indices = range(50000, 60000)
-    
     # Create subset datasets
     train_dataset = Subset(full_dataset, train_indices)
     test_dataset = Subset(full_dataset, test_indices)
     
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
-    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False)
-    validation_loader = torch.utils.data.DataLoader(validation_dataset, batch_size=64, shuffle=False)
+    test_loader = torch.utils.data.DataLoader(validation_dataset, batch_size=64, shuffle=False)
+    validation_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False)
 
     print(f"[INFO] Total training batches: {len(train_loader)}")
     print(f"[INFO] Batch size: 64")
