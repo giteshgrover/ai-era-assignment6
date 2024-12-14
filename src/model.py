@@ -69,9 +69,6 @@ class MNISTModel(nn.Module):
          # Output Layer
             # ImageSize 7 x 7
             nn.Conv2d(24, 10, kernel_size=1, padding=0), # 1x1 Mixer Input: 24, Output: 10
-            nn.BatchNorm2d(10),
-            nn.Dropout(dropout_rate),
-            nn.ReLU(),
 
             nn.AvgPool2d(kernel_size=7) # Input: 7 x 7 x 10 Output: 1 x 1 x 10
             # Dropoff, batch normalization and Relu are never done in the last layer
