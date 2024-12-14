@@ -112,7 +112,7 @@ def train_and_test_model():
     model = MNISTModel().to(device)
     criterion = nn.CrossEntropyLoss()
     # optimizer = optim.Adam(model.parameters(), lr=0.001)
-    optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+    optimizer = optim.SGD(model.parameters(), lr=0.1, momentum=0.9)
     scheduler = StepLR(optimizer, step_size=6, gamma=0.1)
     total_params = sum(p.numel() for p in model.parameters())
     print(f"[INFO] Total parameters: {total_params}")
@@ -127,6 +127,7 @@ def train_and_test_model():
         print(f"[INFO] Training of Epoch {epoch+1} completed in {training_time:.2f} seconds")
         print("[INFO] Evaluating model...")
         scheduler.step()
+        print("Current learning rate:", scheduler.get_last_lr()[0])
         test_model(model, test_loader, device)
 
     print("\n[STEP 5/5] Evaluating model against validation...")

@@ -77,9 +77,10 @@ class MNISTModel(nn.Module):
             # ImageSize 7 x 7
             nn.Conv2d(32, 10, kernel_size=1, padding=0), # 1x1 Mixer Input: 24, Output: 10
 
-            nn.AdaptiveAvgPool2d(1) # Input: 7 x 7 x 10 Output: 1 x 1 x 10
+            nn.AdaptiveAvgPool2d(1), # Input: 7 x 7 x 10 Output: 1 x 1 x 10
             # Dropoff, batch normalization and Relu are never done in the last layer
             # Image Size 1 x 1 (x 10)
+            # nn.Conv2d(10, 10, kernel_size=1, padding=0),
 
         )
 
