@@ -44,7 +44,7 @@
      - Input/output dimensions
      - Presence of batch normalization and dropout  
 
-# Traning Logs
+# Training Logs
 ```
 (venv) gitesh.grover@Giteshs-MacBook-Pro ai-era-assignment6 % python src/train.py                   
 
